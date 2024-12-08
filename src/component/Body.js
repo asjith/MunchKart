@@ -1,100 +1,89 @@
 import RestaurantCard from "./RestaurantCard";
-import resList from "../utils/mockData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Shimmer from "./Shimmer";
 
 const Body = () => {
+  const [listOfRestaurant, setListOfRestaurant] = useState([]);
+  const [filteredRestaurant, setFilteredRestaurant] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
-// let listOfRestaurant = [
-//     {
-//         "info": {
-//             "id": "558031",
-//             "name": "Geetham Veg restaurant",
-//             "cloudinaryImageId": "fxoofqi1isfil8oa7ix7",
-//             "costForTwo": "₹450 for two",
-//             "cuisines": [
-//                 "South Indian",
-//                 "North Indian",
-//                 "Sweets",
-//                 "Beverages"
-//             ],
-//             "avgRating": 4,
-//             "avgRatingString": "4.6",
-//             "sla": {
-//                 "deliveryTime": 32,
-//                 "lastMileTravel": 5.6,
-//                 "serviceability": "SERVICEABLE",
-//                 "slaString": "32 mins",
-//                 "lastMileTravelString": "5.6 km",
-//                 "iconType": "ICON_TYPE_EMPTY"
-//             }
-//         },
-//     },
-//     {
-//         "info": {
-//             "id": "558032",
-//             "name": "Geetham NonVeg restaurant",
-//             "cloudinaryImageId": "fxoofqi1isfil8oa7ix7",
-//             "costForTwo": "₹450 for two",
-//             "cuisines": [
-//                 "South Indian",
-//                 "North Indian",
-//                 "Sweets",
-//                 "Beverages"
-//             ],
-//             "avgRating": 5,
-//             "avgRatingString": "3",
-//             "sla": {
-//                 "deliveryTime": 32,
-//                 "lastMileTravel": 5.6,
-//                 "serviceability": "SERVICEABLE",
-//                 "slaString": "32 mins",
-//                 "lastMileTravelString": "5.6 km",
-//                 "iconType": "ICON_TYPE_EMPTY"
-//             }
-//         },
-//     }  
-// ]
-    
-const [listOfRestaurant, setListOfRestaurant] = useState(resList);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
+  const fetchData = async () => {
+    const data = await fetch(
+      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.89960&lng=80.22090&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+    );
+    const json = await data.json();
+    console.log("fetching full data");
+    console.log(json);
+    console.log(
+      json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants
+    );
+    //optional chaining - if any of the below property is missing, will show undefined rather than showing error.
+    setListOfRestaurant(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+    setFilteredRestaurant(
+      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+    );
+  };
 
-return (
+  return listOfRestaurant.length === 0 ? (
+    <Shimmer /> //ternary operator
+  ) : (
     <div className="body">
+      <div className="filter">
         <div className="search">
-            <div className="filter">
-                <button className="filter-btn"
-                    onClick={() => {
-                        //logic to filter 
-                        const filterListOfRestaurant = listOfRestaurant.filter(
-                            (res) => res.info.avgRating > 4.3
-                        );
-                        setListOfRestaurant(filterListOfRestaurant);
-                    }}
-                >
-                    Top Rated Restaurant
-                </button>
-            </div>
+          <input
+            className="search-input"
+            value={searchText}
+            onChange={(event) => {
+              setSearchText(event.target.value);
+            }}
+          ></input>
+          <button
+            onClick={() => {
+              const result = listOfRestaurant.filter((res) =>
+                res.info.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+              setFilteredRestaurant(result);
+            }}
+          >
+            Search
+          </button>
         </div>
-        <div className="res-container">
-            {
-                listOfRestaurant.map((restaurant) => {
-                    return (
-                        <RestaurantCard key = { restaurant.info.id } resData={restaurant} />
-                    )
-                })
-            }
-            {/* <RestaurantCard resData={resList[0]} />
-            <RestaurantCard resData={resList[1]} />
-            <RestaurantCard resData={resList[2]} />
-            <RestaurantCard resData={resList[3]} />
-            <RestaurantCard resData={resList[4]} />
-            <RestaurantCard resData={resList[5]} />
-            <RestaurantCard resData={resList[6]} />
-            <RestaurantCard resData={resList[7]} />
-            <RestaurantCard resData={resList[8]} /> */}
-        </div>
+        <button
+          className="filter-btn"
+          onClick={() => {
+            //logic to filter
+            const filterListOfRestaurant = listOfRestaurant.filter(
+              (res) => res.info.avgRating > 4.3
+            );
+            setFilteredRestaurant(filterListOfRestaurant);
+          }}
+        >
+          Top Rated Restaurant
+        </button>
+        <button
+          className="clear"
+          onClick={() => {
+            setFilteredRestaurant(listOfRestaurant);
+          }}
+        >
+          Clear
+        </button>
+      </div>
+      <div className="res-container">
+        {filteredRestaurant.map((restaurant) => {
+          return (
+            <RestaurantCard key={restaurant.info.id} resData={restaurant} />
+          );
+        })}
+      </div>
     </div>
-)
-}
+  );
+};
 
 export default Body;

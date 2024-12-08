@@ -21,6 +21,7 @@
     width: 200px;
     padding: 10px;
     margin: 10px;
+    background-color: #f0f0f0;
 }
 
 .res-card:hover{
@@ -28,8 +29,10 @@
     cursor: pointer;
 }
 
-.search{
+.filter{
     padding: 20px;
+    display: flex;
+    column-gap: 20px;
 }
 
 .res-img{
@@ -43,5 +46,22 @@
 }
 
 .filter-btn{
+    cursor: pointer;
+}
+
+.Shimmer-constainer{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Shimmer-card{
+    width: 200px;
+    height: 300px;
+    margin: 10px;
+    background-color: #f0f0f0;
+}
+
+.login{
+    padding: 0 20px;
     cursor: pointer;
 }
