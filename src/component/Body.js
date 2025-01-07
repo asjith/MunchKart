@@ -2,34 +2,31 @@ import RestaurantCard from "./RestaurantCard";
 import { useState, useEffect } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router";
+import useRestauarants from "../utils/useRestauarants";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
+  const [searchText, setSearchText] = useState("");
   const [listOfRestaurant, setListOfRestaurant] = useState([]);
   const [filteredRestaurant, setFilteredRestaurant] = useState([]);
-  const [searchText, setSearchText] = useState("");
+
+  const [listOfRestaurantFromAPI, filteredRestaurantFromAPI] =
+    useRestauarants();
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    //calls after the useEffect of useReataurants
+    setListOfRestaurant(listOfRestaurantFromAPI);
+    setFilteredRestaurant(filteredRestaurantFromAPI);
+  }, [listOfRestaurantFromAPI, filteredRestaurantFromAPI]);
 
-  const fetchData = async () => {
-    const data = await fetch(
-      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.89960&lng=80.22090&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+  const isOnline = useOnlineStatus();
+  if (isOnline === false) {
+    return (
+      <div>
+        <h1>No Internet</h1>
+      </div>
     );
-    const json = await data.json();
-    console.log("fetching full data");
-    console.log(json);
-    console.log(
-      json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants
-    );
-    //optional chaining - if any of the below property is missing, will show undefined rather than showing error.
-    setListOfRestaurant(
-      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-    setFilteredRestaurant(
-      json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
-    );
-  };
+  }
 
   return listOfRestaurant.length === 0 ? (
     <Shimmer /> //ternary operator
