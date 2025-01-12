@@ -31,17 +31,18 @@ const Body = () => {
   return listOfRestaurant.length === 0 ? (
     <Shimmer /> //ternary operator
   ) : (
-    <div className="body">
-      <div className="filter">
-        <div className="search">
+    <div className="body m-3">
+      <div className="filter flex">
+        <div className="search mr-4">
           <input
-            className="search-input"
+            className="border border-black"
             value={searchText}
             onChange={(event) => {
               setSearchText(event.target.value);
             }}
           ></input>
           <button
+            className="bg-gray-500 p-1 m-1 rounded-md"
             onClick={() => {
               const result = listOfRestaurant.filter((res) =>
                 res.info.name.toLowerCase().includes(searchText.toLowerCase())
@@ -53,7 +54,7 @@ const Body = () => {
           </button>
         </div>
         <button
-          className="filter-btn"
+          className="filter-btn mr-4 bg-gray-500 p-1 m-1 rounded-md"
           onClick={() => {
             //logic to filter
             const filterListOfRestaurant = listOfRestaurant.filter(
@@ -65,7 +66,7 @@ const Body = () => {
           Top Rated Restaurant
         </button>
         <button
-          className="clear"
+          className="clear bg-gray-500 p-1 m-1 rounded-md"
           onClick={() => {
             setFilteredRestaurant(listOfRestaurant);
           }}
@@ -73,7 +74,7 @@ const Body = () => {
           Clear
         </button>
       </div>
-      <div className="res-container">
+      <div className="res-container flex flex-wrap">
         {filteredRestaurant.map((restaurant) => {
           return (
             <Link
