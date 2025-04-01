@@ -1,9 +1,10 @@
-import RestaurantCard from "./RestaurantCard";
-import { useState, useEffect } from "react";
+import RestaurantCard, { withDiscountLabel } from "./RestaurantCard";
+import { useState, useEffect, useContext } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router";
 import useRestauarants from "../utils/useRestauarants";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 
 const Body = () => {
   const [searchText, setSearchText] = useState("");
@@ -12,6 +13,8 @@ const Body = () => {
 
   const [listOfRestaurantFromAPI, filteredRestaurantFromAPI] =
     useRestauarants();
+
+  const RestaurantCardWithDiscount = withDiscountLabel(RestaurantCard);
 
   useEffect(() => {
     //calls after the useEffect of useReataurants
@@ -27,6 +30,8 @@ const Body = () => {
       </div>
     );
   }
+
+  const { loggedUser, setUserName } = useContext(UserContext);
 
   return listOfRestaurant.length === 0 ? (
     <Shimmer /> //ternary operator
@@ -73,6 +78,13 @@ const Body = () => {
         >
           Clear
         </button>
+        <div className="m-1 p-1 mr-4">
+          <label>User Name : </label>
+          <input
+            className="border border-black p-1"
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </div>
       </div>
       <div className="res-container flex flex-wrap">
         {filteredRestaurant.map((restaurant) => {
@@ -81,7 +93,14 @@ const Body = () => {
               key={restaurant.info.id}
               to={"/restaurants/" + restaurant.info.id}
             >
-              <RestaurantCard resData={restaurant} />
+              {
+                // console.log(restaurant.info.aggregatedDiscountInfoV3)
+                restaurant.info.aggregatedDiscountInfoV3 ? (
+                  <RestaurantCardWithDiscount resData={restaurant} />
+                ) : (
+                  <RestaurantCard resData={restaurant} />
+                )
+              }
             </Link>
           );
         })}
