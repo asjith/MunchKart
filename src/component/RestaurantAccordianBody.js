@@ -11,7 +11,10 @@ const RestaurantAccordianBody = (props) => {
     dispatch(addItem(itemDetails));
   };
   return (
-    <div className="p-2 m-2 text-left border-gray-500 border-b-2 flex justify-between">
+    <div
+      data-testid="itemCard"
+      className="p-2 m-2 text-left border-gray-500 border-b-2 flex justify-between"
+    >
       <div className="w-9/12">
         <div className="mb-2">
           <span className="block">{bodyInfo?.card?.info?.name}</span>

@@ -12,6 +12,9 @@ const useRestauarants = () => {
 
   const fetchData = async () => {
     const data = await fetch(RESTAURANT_API);
+    // const data = await fetch(
+    //   "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.97530&lng=77.59100&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+    // );
     const json = await data.json();
     setListOfRestaurant(
       json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants

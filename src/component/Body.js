@@ -41,6 +41,7 @@ const Body = () => {
         <div className="search mr-4">
           <input
             className="border border-black"
+            data-testid="searchInput"
             value={searchText}
             onChange={(event) => {
               setSearchText(event.target.value);
@@ -82,6 +83,7 @@ const Body = () => {
           <label>User Name : </label>
           <input
             className="border border-black p-1"
+            data-testid="usernameInput"
             onChange={(e) => setUserName(e.target.value)}
           />
         </div>

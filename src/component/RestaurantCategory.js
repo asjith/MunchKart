@@ -4,7 +4,7 @@ import RestaurantAccordian from "./RestaurantAccordian";
 const RestaurantCategory = (props) => {
   const { data, expand, setShowIndex } = props;
   //console.log(data);
-  console.log(expand);
+  //console.log(expand);
   const [showSubIndex, setShowSubIndex] = useState(0);
 
   return data?.card?.card?.["@type"] ===
